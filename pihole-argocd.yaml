@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pihole
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://lfcaldeira.github.io/pihole-kubernetes/
+    chart: pihole
+    targetRevision: 1.2.0  # ou latest, vê no teu index.yaml
+    helm:
+      values: |
+        adminPassword: "admin"
+        serviceWeb:
+          type: LoadBalancer
+        persistentVolumeClaim:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pihole
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+
